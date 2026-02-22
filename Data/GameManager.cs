@@ -69,7 +69,7 @@ public class GameManager
     private void CreateCharacter()
     {
         //이름 입력
-        Console.WriteLine("캐릭터의 이름을 입력하세요 : ");
+        Console.Write("캐릭터의 이름을 입력하세요 : ");
         string? name = Console.ReadLine(); // nullable 허용
 
         if ( string.IsNullOrWhiteSpace(name))
@@ -80,13 +80,13 @@ public class GameManager
         Console.WriteLine($"'{name}'님이 생성되었습니다. 모험을 시작하겠습니다!\n");
 
         //직업 선택
-        Console.WriteLine("직업을 선택하세요 : \n 1. 전사 \n 2. 궁수 \n 3. 마법사");
+        Console.WriteLine("직업을 선택하세요  \n 1. 전사 \n 2. 궁수 \n 3. 마법사");
 
         JobType jobType = JobType.Warrior; // 기본값 설정
 
         while (true)
         {
-            Console.WriteLine("숫자를 입력하세요 : ");
+            Console.Write("숫자를 입력하세요 : ");
             string? input = Console.ReadLine(); 
 
             switch(input)
@@ -110,9 +110,9 @@ public class GameManager
         //입력한 이름과 선택한 직업으로 플레이어 캐릭터 생성
         Player = new Player(name, jobType, gold: 1000);
         Console.WriteLine($"'{Player.Name}'님이 '{Player.Job}' 직업으로 생성되었습니다. 모험을 시작하겠습니다!\n");
-
+        Player.DisplayInfo();
         //테스트 코드
-        Console.WriteLine($"[테스트] 플레이어 정보 : 이름={Player.Name}, 직업={Player.Job}, HP={Player.CurrentHP}/{Player.MaxHP}, MP={Player.CurrentMP}/{Player.MaxMP}, 공격력={Player.AttackPower}, 방어력={Player.Defense}, 레벨={Player.Level}, 골드={Player.Gold}");
+        // Console.WriteLine($"[테스트] 플레이어 정보 : 이름={Player.Name}, 직업={Player.Job}, HP={Player.CurrentHP}/{Player.MaxHP}, MP={Player.CurrentMP}/{Player.MaxMP}, 공격력={Player.AttackPower}, 방어력={Player.Defense}, 레벨={Player.Level}, 골드={Player.Gold}");
     }
     #endregion
 }

@@ -31,7 +31,6 @@ public class  Player : Character
 
     #region 직업별 초기 스텟
 
-
     //체력
     private static int GetInitHP(JobType job)
     {
@@ -72,5 +71,15 @@ public class  Player : Character
             JobType.Mage => 10,
             _ => 10
         };
+    #endregion
+
+    #region 매서드
+    //플레이어 정보 출력 ( 오버라이드 )
+    public override void DisplayInfo()
+    {
+        base.DisplayInfo();
+        Console.WriteLine($"골드 : {Gold}");
+        Console.WriteLine($"직업 : {Job}");
+    }
     #endregion
 }
