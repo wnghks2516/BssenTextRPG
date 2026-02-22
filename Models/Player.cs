@@ -16,10 +16,10 @@ public class  Player : Character
     #region 생성자
     public Player(string name, JobType job, int gold) : base(
     name: name,
-    maxHP: 100,
-    maxMP: 50,
-    attackPower: 20,
-    defense: 10,
+    maxHP: GetInitHP(job),
+    maxMP: GetInitMP(job),
+    attackPower: GetInitAttack(job),
+    defense: GetInitDefense(job),
     level: 1
     )
     {
@@ -27,5 +27,50 @@ public class  Player : Character
         Gold = 1000;
     }
 
+    #endregion
+
+    #region 직업별 초기 스텟
+
+
+    //체력
+    private static int GetInitHP(JobType job)
+    {
+        switch(job)
+        {
+            case JobType.Warrior: return 150;
+            case JobType.Archer: return 100;
+            case JobType.Mage: return 80;
+            default: return 100;
+        }
+    }
+
+    private static int GetInitMP(JobType job)
+    {
+        switch (job)
+        {
+            case JobType.Warrior: return 30;
+            case JobType.Archer: return 70;
+            case JobType.Mage: return 110;
+            default: return 100;
+        }
+    }
+
+    private static int GetInitAttack(JobType job) =>
+        job switch
+        {
+            JobType.Warrior => 20,
+            JobType.Archer => 30,
+            JobType.Mage => 40,
+            _ => 10
+        };
+
+    private static int GetInitDefense(JobType job) =>
+        job switch
+        {
+            JobType.Warrior => 40,
+            JobType.Archer => 20,
+            JobType.Mage => 10,
+            _ => 10
+        };
     #endregion
 }

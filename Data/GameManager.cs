@@ -110,6 +110,9 @@ public class GameManager
         //입력한 이름과 선택한 직업으로 플레이어 캐릭터 생성
         Player = new Player(name, jobType, gold: 1000);
         Console.WriteLine($"'{Player.Name}'님이 '{Player.Job}' 직업으로 생성되었습니다. 모험을 시작하겠습니다!\n");
+
+        //테스트 코드
+        Console.WriteLine($"[테스트] 플레이어 정보 : 이름={Player.Name}, 직업={Player.Job}, HP={Player.CurrentHP}/{Player.MaxHP}, MP={Player.CurrentMP}/{Player.MaxMP}, 공격력={Player.AttackPower}, 방어력={Player.Defense}, 레벨={Player.Level}, 골드={Player.Gold}");
     }
     #endregion
 }
