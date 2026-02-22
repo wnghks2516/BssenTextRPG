@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using TextRPG.Utils;
+using TextRPG.Models;
 
 namespace TextRPG.Data;
 
@@ -46,8 +47,61 @@ public class GameManager
     {
         ConsoleUI.ShowTitle();
         Console.WriteLine("게임을 시작합니다.\n");
+
+        
+        CreateCharacter();
+
+        //Todo 인벤토리 초기화
+
+        //Todo 초기 아이템 지급
     }
 
+    #endregion
+
+
+    #region 캐릭터 생성
+    private void CreateCharacter()
+    {
+        //이름 입력
+        Console.WriteLine("캐릭터의 이름을 입력하세요 : ");
+        string? name = Console.ReadLine(); // nullable 허용
+
+        if ( string.IsNullOrWhiteSpace(name))
+        {
+            name = "무명용사"; // 기본 이름 설정
+        }
+
+        Console.WriteLine($"'{name}'님이 생성되었습니다. 모험을 시작하겠습니다!\n");
+
+        //직업 선택
+        Console.WriteLine("직업을 선택하세요 : \n 1. 전사 \n 2. 궁수 \n 3. 마법사");
+
+        JobType jobType = JobType.Warrior; // 기본값 설정
+
+        while (true)
+        {
+            Console.WriteLine("숫자를 입력하세요 : ");
+            string? input = Console.ReadLine(); 
+
+            switch(input)
+            {
+                case "1":
+                    jobType = JobType.Warrior;
+                    break;
+                case "2":
+                    jobType = JobType.Archer;
+                    break;
+                case "3":
+                    jobType = JobType.Mage;
+                    break;
+                default:
+                    Console.WriteLine("잘못된 입력입니다. 다시 입력해주세요.");
+                    continue; // 잘못된 입력 시 다시 입력 받기
+            }
+            break; // 올바른 입력이 들어오면 루프 종료
+        }
+
+    }
     #endregion
 }
 
