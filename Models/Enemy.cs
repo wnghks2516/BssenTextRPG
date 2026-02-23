@@ -36,11 +36,11 @@ public class Enemy : Character
         string[] enemyTypes = {"고블린", "오크", "트롤", "슬라임"};
         string enemyName = enemyTypes[random.Next(enemyTypes.Length)];
 
-        int maxHP = 50 + (enemyLevel - 1) * 10; // 레벨에 따른 최대 HP 증가
-        int maxMP = 20 + (enemyLevel - 1) * 5; // 레벨에 따른 최대 MP 증가
-        int attackPower = 10 + (enemyLevel - 1) * 2; // 레벨에 따른 공격력 증가
-        int defense = 5 + (enemyLevel - 1); // 레벨에 따른 방어력 증가
-        int goldReward = 20 + (enemyLevel - 1) * 5; // 레벨에 따른 골드 보상 증가
+        int maxHP = 50 + (enemyLevel - 1) * 20; // 레벨에 따른 최대 HP 증가
+        int maxMP = 20 + (enemyLevel - 1) * 10; // 레벨에 따른 최대 MP 증가
+        int attackPower = 20 + (enemyLevel - 1) * 5; // 레벨에 따른 공격력 증가
+        int defense = 5 + (enemyLevel - 1) * 3; // 레벨에 따른 방어력 증가
+        int goldReward = 20 + (enemyLevel - 1) * 10; // 레벨에 따른 골드 보상 증가
         
         return new Enemy(enemyName, maxHP, maxMP, attackPower, defense, enemyLevel, goldReward);
     }
@@ -48,7 +48,7 @@ public class Enemy : Character
 
     public override void DisplayInfo()
     {
-        Console.WriteLine($"==== {Name} 정보====");
+        Console.WriteLine($"=========== {Name} 정보 ===========");
         Console.WriteLine($"레벨: {Level}");
         Console.WriteLine($"HP: {CurrentHP}/{MaxHP}");
         Console.WriteLine($"공격력: {AttackPower}");
@@ -59,7 +59,23 @@ public class Enemy : Character
     
     public override int Attack(Character target)
     {
-        return target.TakeDamage(AttackPower);
+        //return target.TakeDamage(AttackPower);
+
+        //random 공격력 부여
+        Random random = new Random();
+
+        if(random.NextDouble() < 0.7)
+        {
+            //일반 공격
+            return target.TakeDamage(AttackPower);
+        }
+        else
+        {
+            //강력한 공격 ( 2배 )
+            int strongAttackPower = (int)(AttackPower * 2);
+            Console.WriteLine($"{Name}이(가) 강력한 공격을 시도했습니다! 공격력 : {strongAttackPower}");
+            return target.TakeDamage(strongAttackPower);
+        }
     }
     #endregion
 }

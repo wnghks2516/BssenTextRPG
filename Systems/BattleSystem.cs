@@ -26,7 +26,7 @@ public class BattleSystem
 
         while (player.IsAlive && enemy.IsAlive)
         {
-            Console.WriteLine($"║       턴 {turn} 시작!             ║");
+            Console.WriteLine($"\n║           턴 {turn} 시작!             ║");
             //플레이어 턴
             //PlayerTurn(player, enemy);
 
@@ -36,6 +36,22 @@ public class BattleSystem
                 Console.WriteLine("도망에 성공했습니다!");
                 return false;
             }
+
+            // 적 사망여무 판다
+            if(!enemy.IsAlive)
+            {
+                break;
+            }
+
+            // 적 턴
+            EnemyTurn(player, enemy);
+
+            // 플레이어 사망 여부 판단
+            if(!player.IsAlive)
+            {
+                break;
+            }
+
             turn++;
         }
 
@@ -61,6 +77,8 @@ public class BattleSystem
 
         //Todo 적 사망여부 판단
         //Todo 적 턴
+
+
         return player.IsAlive;
     }
     #endregion
@@ -82,8 +100,8 @@ public class BattleSystem
         Console.WriteLine("1. 공격");
         Console.WriteLine("2. 스킬");
         Console.WriteLine("3. 도망");
-       
-        while(true)
+        Console.WriteLine("");
+        while (true)
         {
             Console.Write("선택: ");
             string? input = Console.ReadLine();
@@ -123,5 +141,13 @@ public class BattleSystem
 
     #region 적 턴
 
+    private void EnemyTurn (Player player, Enemy enemy)
+    {
+        Console.WriteLine($"{enemy.Name}의 턴입니다.");
+
+        int damage = enemy.Attack(player);
+        Console.WriteLine($"{enemy.Name}이 {player.Name}에게 {damage}의 피해를 입혔습니다.");
+        Console.WriteLine($"{player.Name}의 남은 HP: {player.CurrentHP}/{player.MaxHP}");
+    }
     #endregion
 }

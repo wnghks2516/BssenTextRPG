@@ -66,10 +66,10 @@ public class  Player : Character
     private static int GetInitDefense(JobType job) =>
         job switch
         {
-            JobType.Warrior => 40,
-            JobType.Archer => 20,
-            JobType.Mage => 10,
-            _ => 10
+            JobType.Warrior => 15,
+            JobType.Archer => 10,
+            JobType.Mage => 8,
+            _ => 8
         };
     #endregion
 
