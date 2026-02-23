@@ -42,8 +42,11 @@ public class BattleSystem
     //플레이어 행동 ( 1. 공격 2. 스킬 3. 도망 )
     private void PlayerTurn(Player player, Enemy enemy)
     {
-        Console.WriteLine($"║       플레이어 턴!             ║");
+        Console.WriteLine("\n╔════════════════════════════════╗");
+        Console.WriteLine($"║         플레이어 턴!           ║");
+        Console.WriteLine("╚════════════════════════════════╝\n");
         Console.WriteLine($"HP : {player.CurrentHP}/{player.MaxHP}  MP: {player.CurrentMP}/{player.MaxMP}");
+        Console.WriteLine($"Att : {player.AttackPower} , Def: {player.Defense}");
         Console.WriteLine("\n 행동을 선택하세요.");
         Console.WriteLine("1. 공격");
         Console.WriteLine("2. 스킬");
@@ -64,7 +67,15 @@ public class BattleSystem
                     break;
                 case "2":
                     //스킬 매서드 호출
-                    Console.WriteLine("스킬을 선택했습니다.");
+                    if(player.CurrentMP < 20)
+                    {
+                        Console.WriteLine("MP가 부족하여 스킬을 사용할 수 없습니다.");
+                        continue;
+                    }
+                   // 스킬 발동
+                    int skillDamage = player.SkillAttack(enemy);
+                    Console.WriteLine($"{player.Name}이 스킬을 사용하여 {enemy.Name}에게 {skillDamage}의 피해를 입혔습니다.");
+                    Console.WriteLine($"{enemy.Name}의 남은 HP: {enemy.CurrentHP}/{enemy.MaxHP}");
                     break;
                 case "3":
                     //도망 매서드 호출

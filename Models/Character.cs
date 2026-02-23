@@ -51,7 +51,7 @@ public abstract class Character
     public virtual int TakeDamage(int damage)
     {
         //방어력 적용
-        int actualDamage = Math.Max(1, damage + 100/100+Defense); // 실제 대미지는 방어력을 뺀 값 ( 최소 0 )
+        int actualDamage = Math.Max(1, damage + (100/100+Defense)); // 실제 대미지는 방어력을 뺀 값 ( 최소 0 )
         CurrentHP = Math.Max(0, CurrentHP - actualDamage); // HP 감소 ( 최소 0 )
         return actualDamage; // 실제로 입은 대미지 반환
     }
