@@ -113,4 +113,13 @@ public class  Player : Character
         return CurrentMP;
     }
     #endregion
+
+
+    #region 골드 획득 매서드
+    public void GainGold(int amount)
+    {
+        Gold += amount;
+        Console.WriteLine($"{amount} 골드를 획득했습니다. 현재 골드: {Gold}");
+    }
+    #endregion
 }
