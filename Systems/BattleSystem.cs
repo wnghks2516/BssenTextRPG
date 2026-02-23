@@ -58,7 +58,9 @@ public class BattleSystem
             {
                 case "1":
                     //공격 매서드 호출
-                    Console.WriteLine("공격을 선택했습니다.");
+                    int damage = player.Attack(enemy);
+                    Console.WriteLine($"{player.Name}이 {enemy.Name}에게 {damage}의 피해를 입혔습니다.");
+                    Console.WriteLine($"{enemy.Name}의 남은 HP: {enemy.CurrentHP}/{enemy.MaxHP}");
                     break;
                 case "2":
                     //스킬 매서드 호출

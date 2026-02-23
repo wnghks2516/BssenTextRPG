@@ -81,5 +81,13 @@ public class  Player : Character
         Console.WriteLine($"골드 : {Gold}");
         Console.WriteLine($"직업 : {Job}");
     }
+
+    public override int Attack(Character target)
+    {
+        int attackDamage = AttackPower;
+        //todo 장착무기 또는 방어구에 따른 추가 데미지 계산
+
+        return target.TakeDamage(attackDamage);
+    }
     #endregion
 }

@@ -42,6 +42,20 @@ public abstract class Character
 
     #region 매서드
     //공통으로 사용할 메소드들
+    //추상 메서드 : 자식 클래스에서 반드시 구현해야 하는 매서드
+
+    public abstract int Attack(Character target); //공격 매서드 ( 반환값 : 공격력 )
+
+    //대미지 처리 매서드
+    //가상 매서드로 구현 : 자식 클래스에서 필요에 따라 오버라이드하여 구현할 수 있는 매서드
+    public virtual int TakeDamage(int damage)
+    {
+        //방어력 적용
+        int actualDamage = Math.Max(1, damage + 100/100+Defense); // 실제 대미지는 방어력을 뺀 값 ( 최소 0 )
+        CurrentHP = Math.Max(0, CurrentHP - actualDamage); // HP 감소 ( 최소 0 )
+        return actualDamage; // 실제로 입은 대미지 반환
+    }
+
 
     //캐릭터 스텟 출력
     public virtual void DisplayInfo()
