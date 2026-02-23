@@ -38,6 +38,9 @@ public class GameManager
     private GameManager()
     {
         // 클래스가 생성될 때 초기화 작업 수행
+
+        //전투 시스템 초기화
+        BattleSystem = new BattleSystem();
     }
     #endregion
 
@@ -48,6 +51,9 @@ public class GameManager
     public bool IsRunning { get; private set; } = true;
 
     #endregion
+
+    //전투 시스템
+    public BattleSystem BattleSystem { get; private set; } = new BattleSystem();
 
 
 
@@ -123,11 +129,11 @@ public class GameManager
         Console.WriteLine($"'{Player.Name}'님이 '{Player.Job}' 직업으로 생성되었습니다. 모험을 시작하겠습니다!\n");
         Player.DisplayInfo();
 
-        Enemy enemy = Enemy.CreateEnemy(Player.Level);
-        enemy.DisplayInfo();
+        //Enemy enemy = Enemy.CreateEnemy(Player.Level);
+        //enemy.DisplayInfo();
 
-        BattleSystem battleSystem = new BattleSystem();
-        battleSystem.StartBattle(Player, enemy);
+        //BattleSystem battleSystem = new BattleSystem();
+        //battleSystem.StartBattle(Player, enemy);
 
         ConsoleUI.PressAnyKey();
     }
@@ -165,6 +171,7 @@ public class GameManager
                 break;
             case "4":
                 //던전 입장
+                EnterDungeon();
                 break;
             case "5":
                 //휴식하여 HP/MP 회복
@@ -188,5 +195,25 @@ public class GameManager
 
         }
     #endregion
-}
 
+    #region 메뉴 기능
+    // 던전 입장
+
+    public void EnterDungeon()
+    {
+        Console.Clear();   
+        Console.WriteLine("던전에 입장합니다...");
+        //Todo 던전 시스템 구현
+
+        //적 생성
+        Enemy enemy = Enemy.CreateEnemy(Player!.Level);
+        ConsoleUI.PressAnyKey();
+
+        //전투 시작
+        BattleSystem.StartBattle(Player!, enemy);
+
+        Console.WriteLine("\n 던전 탐험을 끝내고 마을로 돌아갑니다..");
+        ConsoleUI.PressAnyKey();
+    }
+    #endregion
+}

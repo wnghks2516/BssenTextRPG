@@ -33,7 +33,7 @@ public class BattleSystem
             if (!PlayerTurn(player, enemy))
             {
                 //플레이어 도망
-                Console.WriteLine("도망에 성공했습니다!");
+              
                 return false;
             }
 
@@ -128,8 +128,18 @@ public class BattleSystem
                     return true;
                 case "3":
                     //도망 매서드 호출
-                    Console.WriteLine("도망을 선택했습니다.");
-                    return false;
+                    // 50프로 확률로 성공
+                    Random random = new Random();
+                    if(random.NextDouble() < 0.5)
+                    {
+                        Console.WriteLine("도망에 성공했습니다!");
+                        return false;
+                    }
+                    else
+                    {
+                        Console.WriteLine("도망에 실패했습니다!");
+                        return true;
+                    }
                 default:
                     Console.WriteLine("잘못된 입력입니다. 다시 선택해주세요.");
                     break;
