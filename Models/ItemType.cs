@@ -16,3 +16,10 @@ public enum EquipmentSlot
     Weapon,
     Armor
 }
+
+//포션 타입
+public enum PotionType
+{
+    Health,
+    Mana
+}

@@ -74,16 +74,21 @@ public class GameManager
         //인벤토리 초기화
         Inventory = new InventorySystem();
 
+
+        //Todo 초기 아이템 지급
+        SetupInitItems();
+
+
         //메인 게임 루프
         IsRunning = true;
         while(IsRunning)
         {
             showMainMenu();
         }
-
-        //Todo 인벤토리 초기화
-
-        //Todo 초기 아이템 지급
+        if(!IsRunning)
+        {
+            ConsoleUI.ShowGameOver();
+        }
     }
 
     #endregion
@@ -145,6 +150,20 @@ public class GameManager
         ConsoleUI.PressAnyKey();
     }
     #endregion
+    
+    #region 초기 아이템 지급
+    private void SetupInitItems()
+    {
+        Inventory.AddItem(Equipment.CreateSword("목검"));
+        Inventory.AddItem(Equipment.CreateArmor("가죽갑옷"));
+        Inventory.AddItem(Consumable.CreatePotion("체력포션"));
+        Inventory.AddItem(Consumable.CreatePotion("체력포션"));
+        Inventory.AddItem(Consumable.CreatePotion("마나포션"));
+
+        Console.WriteLine("\n초기 아이템이 지급되었습니다.");
+        ConsoleUI.PressAnyKey();
+    }
+    #endregion
 
     #region 메인메뉴 출력
     public void showMainMenu()
@@ -173,7 +192,6 @@ public class GameManager
             case "2":
                 //인벤토리 메뉴로 이동
                 Inventory.ShowInventoryMenu();
-              
                 break;
             case "3":
                 //상점 메뉴로 이동

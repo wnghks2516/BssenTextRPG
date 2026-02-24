@@ -27,7 +27,7 @@ public class Equipment : Item
         EquipmentSlot slot, 
         int attackBonus = 0 , 
         int defenseBonus = 0) : 
-        base(name, description, price, slot ==EquipmentSlot.Weapon ? ItemType.Weapon : ItemType.Armor)
+        base(name, description, price, slot == EquipmentSlot.Weapon ? ItemType.Weapon : ItemType.Armor)
     {
         Slot = slot;
         AttackBonus = attackBonus;

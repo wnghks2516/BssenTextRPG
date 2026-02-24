@@ -52,6 +52,25 @@ public class InventorySystem
             Console.WriteLine("인벤토리가 비어 있습니다.");
             return;
         }
+
+        Console.WriteLine("\n[보유 아이템]");
+        Console.WriteLine("장비 ");
+        for(int i = 0; i < Items.Count; i++)
+        {
+            if(Items[i] is Equipment)
+            {
+                Console.WriteLine($"{i + 1}. {Items[i].Name} - {Items[i].Description}");
+            }
+        }
+
+        Console.WriteLine("소비 아이템 ");
+        for(int i = 0; i < Items.Count; i++)
+        {
+            if(Items[i] is Consumable)
+            {
+                Console.WriteLine($"{i + 1}. {Items[i].Name} - {Items[i].Description}");
+            }
+        }
     }
 
     public void ShowInventoryMenu()

@@ -19,7 +19,7 @@ public abstract class Character
     public int AttackPower { get; protected set; }
     public int Defense { get; protected set; }
     public int Level { get; protected set; }
-    
+
     // 생존여부
     public bool IsAlive => CurrentHP > 0; // 현재 HP가 0보다 크면 생존, 그렇지 않으면 사망
     #endregion
@@ -71,4 +71,23 @@ public abstract class Character
     }
 
     #endregion
+
+    //HP 회복 매서드
+    public int HealHP(int Amount)
+    {
+        int BeforeHP = CurrentHP;
+        //회복 후 현재 HP가 최대 HP를 초과하지 않도록 설정
+        CurrentHP = Math.Min(MaxHP, CurrentHP + Amount);
+        return CurrentHP - BeforeHP; // 실제로 회복된 HP 반환
+    }
+
+
+    //MP 회복 매서드
+    public int HealMP(int Amount)
+    {
+        int BeforeMP = CurrentMP;
+        //회복 후 현재 MP가 최대 MP를 초과하지 않도록 설정
+        CurrentMP = Math.Min(MaxMP, CurrentMP + Amount);
+        return CurrentMP - BeforeMP; // 실제로 회복된 MP 반환
+    }
 }
