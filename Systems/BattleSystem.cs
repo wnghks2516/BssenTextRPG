@@ -95,7 +95,6 @@ public class BattleSystem
         Console.WriteLine($"║         플레이어 턴!           ║");
         Console.WriteLine("╚════════════════════════════════╝\n");
         Console.WriteLine($"HP : {player.CurrentHP}/{player.MaxHP}  MP: {player.CurrentMP}/{player.MaxMP}");
-        Console.WriteLine($"Att : {player.AttackPower} , Def: {player.Defense}");
         Console.WriteLine("\n 행동을 선택하세요.");
         Console.WriteLine("1. 공격");
         Console.WriteLine("2. 스킬");

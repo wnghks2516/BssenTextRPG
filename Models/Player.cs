@@ -18,17 +18,17 @@ public class  Player : Character
 
     #region 생성자
     public Player(string name, JobType job, int gold) : base(
-    name: name,
-    maxHP: GetInitHP(job),
-    maxMP: GetInitMP(job),
-    attackPower: GetInitAttack(job),
-    defense: GetInitDefense(job),
-    level: 1
+        name: name,
+        maxHP: GetInitHP(job),
+        maxMP: GetInitMP(job),
+        attackPower: GetInitAttack(job),
+        defense: GetInitDefense(job),
+        level: 1
     )
-    {
-        Job = job;
-        Gold = 1000;
-    }
+        {
+            Job = job;
+            Gold = 1000;
+        }
 
     #endregion
 
@@ -107,8 +107,20 @@ public class  Player : Character
     #region 기본공격 매서드
     public override int Attack(Character target)
     {
+
+        //장착무기 또는 방어구에 따른 추가 데미지 계산
         int attackDamage = AttackPower;
-        //todo 장착무기 또는 방어구에 따른 추가 데미지 계산
+
+        // null 병합 연산자 : ??
+        // int? a 란 int형 변수 a가 null이 될 수 있음을 나타냄.
+        //int? a = null;
+
+        attackDamage += EquippedWeapon?.AttackBonus ?? 0; // 무기 공격력 보너스
+        // 아래의 코드가 위의 코드와 동일한 기능을 수행
+        //if ( EquippedArmor != null)
+        //{
+        //    attackDamage += EquippedArmor.DefenseBonus; // 방어구 공격력 보너스
+        //}
 
         return target.TakeDamage(attackDamage);
     }
@@ -122,6 +134,8 @@ public class  Player : Character
         // 스킬 공격은 기본공격의 1.5배 대미지를 주지만 마나를 소모
 
         int totalDamage = (int)(AttackPower * 1.5);
+        totalDamage += EquippedWeapon?.AttackBonus ?? 0; // 무기 공격력 보너스
+
         Console.WriteLine($"마법 공격력 : {totalDamage}");
         if (CurrentMP < mpCost)
         {
@@ -189,7 +203,7 @@ public class  Player : Character
         }
         if(equipment != null)
         {
-            Console.WriteLine($"{equipment}을(를) 해제했습니다.");
+            Console.WriteLine($"{equipment.Name}을(를) 해제했습니다.");
         }
         return equipment;
     }
