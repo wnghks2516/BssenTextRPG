@@ -79,7 +79,7 @@ public class GameManager
         SetupInitItems();
 
         //테스트 코드 - 대미지 적용
-        Player.TakeDamage(70);
+        //Player.TakeDamage(70);
 
 
         //메인 게임 루프

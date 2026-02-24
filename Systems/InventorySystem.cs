@@ -94,6 +94,7 @@ public class InventorySystem
                     break;
                 case "2":
                     //아이템 버리기 매서드 호출
+                    DropItem();
                     break;
                 case "0":
                     return; // 나가기
@@ -132,6 +133,39 @@ public class InventorySystem
         else if( index != 0)
         {
             Console.WriteLine("잘못된 입력입니다. 숫자를 입력해주세요.");
+        }
+    }
+    #endregion
+
+
+    #region 아이템 버리기 매서드
+
+    private void DropItem()
+    {
+        if (Items.Count == 0) return;
+        Console.WriteLine("\n 버릴 아이템 번호를 고르세요. 0 : 취소");
+        //TryParse = 문자열을 숫자로 변환 시도, 성공하면 true 반환, 실패하면 false 반환
+        // Out = 변환된 숫자를 저장할 변수, TryParse가 성공하면 해당 변수에 변환된 숫자가 저장됨
+        if (int.TryParse(Console.ReadLine(), out int index) && index > 0 && index <= Items.Count)
+        {
+            Item item = Items[index - 1];
+            Console.Write($"정말 {item.Name}을 버리겠습니까? Y/N : ");
+            string? input = Console.ReadLine();
+            if (input != null && input.ToUpper() == "Y")
+            {
+                RemoveItem(item);
+            }
+            else
+            {
+                Console.WriteLine("아이템 버리기를 취소했습니다.");
+                ConsoleUI.PressAnyKey();
+            }
+
+        }
+        else if (index != 0)
+        {
+            Console.WriteLine("잘못된 입력입니다. 숫자를 입력해주세요.");
+            ConsoleUI.PressAnyKey();
         }
     }
     #endregion
