@@ -80,9 +80,27 @@ public class  Player : Character
     //플레이어 정보 출력 ( 오버라이드 )
     public override void DisplayInfo()
     {
-        base.DisplayInfo();
+        //base.DisplayInfo();
+        Console.Clear();
+        Console.WriteLine($"=========== {Name} 정보 ===========");
+        Console.WriteLine($"레벨 : {Level}");
         Console.WriteLine($"골드 : {Gold}");
+        Console.WriteLine($"HP : {CurrentHP}/{MaxHP} | MP : {CurrentMP}/{MaxMP}");
+
+        int attackBonus = EquippedWeapon != null ? EquippedWeapon.AttackBonus : 0;
+        int defenseBonus = EquippedArmor != null ? EquippedArmor.DefenseBonus : 0;
+
+        Console.WriteLine($"ATK : {AttackPower} (+{attackBonus}) | DEF : {Defense} (+{defenseBonus})");
+        //장착 아이템 정보
+
+        Console.WriteLine($"[ 장착 중인 장비 ] \n" +
+            $"무기 : {(EquippedWeapon != null ? EquippedWeapon.Name : "없음")} | " +
+            $"방어구 : {(EquippedArmor != null ? EquippedArmor.Name : "없음")}");
+
         Console.WriteLine($"직업 : {Job}");
+
+       
+
     }
     #endregion
 
@@ -146,9 +164,9 @@ public class  Player : Character
         //이전 장비 해제 메시지
         if (prevEquipment != null)
         {
-            Console.WriteLine($"{prevEquipment}을(를) 해제하였습니다.");
+            Console.WriteLine($"{prevEquipment.Name}을(를) 해제하였습니다.");
         }
-        Console.WriteLine($"{newEquipment}을(를) 장착했습니다.");
+        Console.WriteLine($"{newEquipment.Name}을(를) 장착했습니다.");
     }
     //장비 해제
     public Equipment? UnequipItem(EquipmentSlot slot)

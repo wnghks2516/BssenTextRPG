@@ -157,8 +157,20 @@ public class GameManager
     #region 초기 아이템 지급
     private void SetupInitItems()
     {
-        Inventory.AddItem(Equipment.CreateSword("목검"));
-        Inventory.AddItem(Equipment.CreateArmor("가죽갑옷"));
+        //기본 장비
+        // var = 지역변수, 지역변수는 메서드 내부에서만 사용 가능
+        // 필드와 프로퍼티는 클래스 전체에서 사용 가능
+        // sum이라는 지역변수는 이 메서드 내부에서만 사용 가능, 다른 메서드에서는 접근 불가능
+        var weapon = Equipment.CreateSword("목검");
+        var armor  = Equipment.CreateArmor("가죽갑옷");
+        Inventory.AddItem(weapon);
+        Inventory.AddItem(armor);
+
+        //기본 장비 착용
+        Player.EquipItem(weapon);
+        Player.EquipItem(armor);
+
+
         Inventory.AddItem(Consumable.CreatePotion("체력포션"));
         Inventory.AddItem(Consumable.CreatePotion("체력포션"));
         Inventory.AddItem(Consumable.CreatePotion("마나포션"));
