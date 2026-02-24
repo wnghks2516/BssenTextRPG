@@ -9,8 +9,11 @@ public class  Player : Character
     
     //골드
     public int Gold { get; private set; }
-    //Todo 장착 무기 
-    //Todo 장착 방어구
+    // 장착 무기 
+    public Equipment? EquippedWeapon { get; private set; }
+
+    // 장착 방어구
+    public Equipment? EquippedArmor { get; private set; }
     #endregion
 
     #region 생성자
@@ -122,4 +125,54 @@ public class  Player : Character
         Console.WriteLine($"{amount} 골드를 획득했습니다. 현재 골드: {Gold}");
     }
     #endregion
+
+    //장비 착용 매서드 
+    public void EquipItem(Equipment newEquipment)
+    {
+        Equipment? prevEquipment = null;
+
+        switch (newEquipment.Slot)
+        {
+            case EquipmentSlot.Weapon:
+                prevEquipment = EquippedWeapon;
+                EquippedWeapon = newEquipment;
+                break;
+            case EquipmentSlot.Armor:
+                prevEquipment = EquippedArmor;
+                EquippedArmor = newEquipment;
+                break;
+        }
+
+        //이전 장비 해제 메시지
+        if (prevEquipment != null)
+        {
+            Console.WriteLine($"{prevEquipment}을(를) 해제하였습니다.");
+        }
+        Console.WriteLine($"{newEquipment}을(를) 장착했습니다.");
+    }
+    //장비 해제
+    public Equipment? UnequipItem(EquipmentSlot slot)
+    {
+     Equipment? equipment = null;
+        switch (slot)
+        {
+            case EquipmentSlot.Weapon:
+                equipment = EquippedWeapon;
+                EquippedWeapon = null;
+                break;
+
+            case EquipmentSlot.Armor:
+                equipment = EquippedArmor;
+                EquippedArmor = null;
+                break;
+            default:
+                Console.WriteLine("잘못된 장비 슬롯입니다.");
+                break;
+        }
+        if(equipment != null)
+        {
+            Console.WriteLine($"{equipment}을(를) 해제했습니다.");
+        }
+        return equipment;
+    }
 }

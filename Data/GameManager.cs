@@ -78,6 +78,9 @@ public class GameManager
         //Todo 초기 아이템 지급
         SetupInitItems();
 
+        //테스트 코드 - 대미지 적용
+        Player.TakeDamage(70);
+
 
         //메인 게임 루프
         IsRunning = true;
@@ -191,7 +194,7 @@ public class GameManager
                 break;
             case "2":
                 //인벤토리 메뉴로 이동
-                Inventory.ShowInventoryMenu();
+                Inventory.ShowInventoryMenu(Player);
                 break;
             case "3":
                 //상점 메뉴로 이동

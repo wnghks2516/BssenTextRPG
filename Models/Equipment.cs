@@ -36,7 +36,7 @@ public class Equipment : Item
     #endregion
     public override bool Use(Player player)
     {
-        // 장비 착용 로직
+        player.EquipItem(this);
 
         return true;
     }
