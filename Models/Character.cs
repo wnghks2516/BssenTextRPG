@@ -60,6 +60,7 @@ public abstract class Character
     //캐릭터 스텟 출력
     public virtual void DisplayInfo()
     {
+        Console.Clear();
         Console.WriteLine($"==== {Name} 정보====");
         Console.WriteLine($"레벨: {Level}");
         Console.WriteLine($"HP: {CurrentHP}/{MaxHP}");

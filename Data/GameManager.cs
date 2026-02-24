@@ -53,7 +53,11 @@ public class GameManager
     #endregion
 
     //전투 시스템
-    public BattleSystem BattleSystem { get; private set; } = new BattleSystem();
+    public BattleSystem BattleSystem { get; private set; }
+
+    //인벤토리 시스템
+    public InventorySystem Inventory { get; private set; }
+
 
 
 
@@ -66,6 +70,9 @@ public class GameManager
 
         //캐릭터 생성
         CreateCharacter();
+
+        //인벤토리 초기화
+        Inventory = new InventorySystem();
 
         //메인 게임 루프
         IsRunning = true;
@@ -165,6 +172,8 @@ public class GameManager
                 break;
             case "2":
                 //인벤토리 메뉴로 이동
+                Inventory.ShowInventoryMenu();
+              
                 break;
             case "3":
                 //상점 메뉴로 이동
