@@ -79,7 +79,7 @@ public class BattleSystem
         //Todo 적 턴
 
 
-        return player.IsAlive;
+        
     }
     #endregion
 

@@ -41,6 +41,9 @@ public class GameManager
 
         //전투 시스템 초기화
         BattleSystem = new BattleSystem();
+
+        //상점 시스템 초기화
+        Shop = new ShopSystem();
     }
     #endregion
 
@@ -58,6 +61,8 @@ public class GameManager
     //인벤토리 시스템
     public InventorySystem Inventory { get; private set; }
 
+    //상점 시스템
+    public ShopSystem Shop { get; private set; }
 
 
 
@@ -74,8 +79,6 @@ public class GameManager
         //인벤토리 초기화
         Inventory = new InventorySystem();
 
-
-        //Todo 초기 아이템 지급
         SetupInitItems();
 
         //테스트 코드 - 대미지 적용
@@ -144,11 +147,7 @@ public class GameManager
         Console.WriteLine($"'{Player.Name}'님이 '{Player.Job}' 직업으로 생성되었습니다. 모험을 시작하겠습니다!\n");
         Player.DisplayInfo();
 
-        //Enemy enemy = Enemy.CreateEnemy(Player.Level);
-        //enemy.DisplayInfo();
 
-        //BattleSystem battleSystem = new BattleSystem();
-        //battleSystem.StartBattle(Player, enemy);
 
         ConsoleUI.PressAnyKey();
     }
@@ -210,6 +209,7 @@ public class GameManager
                 break;
             case "3":
                 //상점 메뉴로 이동
+                Shop.ShowShopMenu(Player, Inventory);
                 break;
             case "4":
                 //던전 입장
@@ -245,7 +245,6 @@ public class GameManager
     {
         Console.Clear();   
         Console.WriteLine("던전에 입장합니다...");
-        //Todo 던전 시스템 구현
 
         //적 생성
         Enemy enemy = Enemy.CreateEnemy(Player!.Level);
