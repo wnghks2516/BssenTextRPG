@@ -207,4 +207,17 @@ public class  Player : Character
         }
         return equipment;
     }
+
+    #region 골드 사용 매서드
+    public void SpendGold(int amount)
+    {
+        if (amount > Gold)
+        {
+            Console.WriteLine("골드가 부족합니다.");
+            return;
+        }
+        Gold -= amount;
+        Console.WriteLine($"{amount} 골드를 사용했습니다. 현재 골드: {Gold}");
+    }
+    #endregion
 }

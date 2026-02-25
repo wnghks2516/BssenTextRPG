@@ -38,7 +38,7 @@ public class ShopSystem
         ShopItems.Add(Equipment.CreateSword("전설검"));
 
         //방어구
-        ShopItems.Add(Equipment.CreateArmor("천갑옷"));
+        ShopItems.Add(Equipment.CreateArmor("가죽갑옷"));
         ShopItems.Add(Equipment.CreateArmor("철갑옷"));
         ShopItems.Add(Equipment.CreateArmor("전설갑옷"));
 
@@ -73,6 +73,7 @@ public class ShopSystem
             {
                 case "1":
                     //구매 
+                    BuyItem(player,inventory);
                     break;
                 case "2":
                     // 판매
@@ -88,6 +89,96 @@ public class ShopSystem
                     break;
             }
         }
+    }
+
+    #endregion
+
+    #region 구매 매서드
+    private void BuyItem(Player player, InventorySystem inventory)
+    {
+        Console.Clear();
+        Console.WriteLine("\n구매할 아이템을 선택하세요 : ");
+
+        for (int i = 0; i < ShopItems.Count; i++)
+        {
+            Item item = ShopItems[i];
+            Console.WriteLine($"{i + 1}. [ {item.Type} ] {item.Name} - 가격: {item.Price} 골드");
+        }
+
+        Console.WriteLine("\n구매할 아이템 번호를 선택하세요. 0 : 취소");
+
+        if (int.TryParse(Console.ReadLine(), out var index) && index > 0 && index <= ShopItems.Count)
+        {
+            Item selectedItem = ShopItems[index - 1];
+
+            //골드가 충분한지 확인
+
+            if (player.Gold >= selectedItem.Price)
+            {
+                //골드 차감
+                Console.WriteLine($"{selectedItem.Name}을(를) {selectedItem.Price} 골드로 구매하시겠습니까? Y/N : ");
+                if (Console.ReadLine()?.ToUpper() == "Y")
+                {
+                    player.SpendGold(selectedItem.Price);
+                    
+                    //구매한 아이템의 인스턴스 생성 ( 복제 )
+                    Item? item = CreateItem(selectedItem);
+                    if (item is Equipment equipment)
+                    {
+                        inventory.AddItem(equipment);
+                        player.EquipItem(equipment);
+                    }
+                    else if (item is Consumable consumable)
+                    {
+                        inventory.AddItem(consumable);
+                    }
+                    Console.WriteLine($"{selectedItem.Name}을(를) 구매했습니다.");
+                    ConsoleUI.PressAnyKey();
+                }
+                else
+                {
+                    Console.WriteLine("구매가 취소되었습니다.");
+                    ConsoleUI.PressAnyKey();
+                }
+            }
+            else
+            {
+                Console.WriteLine("골드가 부족합니다.");
+            }
+        }
+    }
+    #endregion
+
+    #region 아이템 복제 매서드
+    private Item? CreateItem ( Item item )
+    {
+        //장착 아이템 
+        if ( item is Equipment equipment )
+        {
+            var newItem = new Equipment(
+                equipment.Name,
+                equipment.Description,
+                equipment.Price,
+                equipment.Slot,
+                equipment.AttackBonus,
+                equipment.DefenseBonus
+                );
+            return newItem;
+        }
+
+        //소모성 아이템
+        else if ( item is Consumable consumable )
+        {
+            var newItem = new Consumable(
+                consumable.Name,
+                consumable.Description,
+                consumable.Price,
+                consumable.HpAmount,
+                consumable.MpAmount
+                );
+            return newItem;
+        }
+        return null;
     }
 
     #endregion
