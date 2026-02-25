@@ -77,6 +77,7 @@ public class ShopSystem
                     break;
                 case "2":
                     // 판매
+                    SellItem(player, inventory);
                     break;
                 case "3":
                     // 상점 나가기
@@ -181,5 +182,49 @@ public class ShopSystem
         return null;
     }
 
+    #endregion
+
+    #region 아이템 판매 매서드
+    private void SellItem ( Player player, InventorySystem inventory )
+    {
+        if ( inventory.Count == 0 )
+        {
+            Console.WriteLine("판매할 아이템이 없습니다.");
+            ConsoleUI.PressAnyKey();
+            return;
+        }
+
+        inventory.DisplayInventory();
+        Console.WriteLine("\n판매할 아이템 번호를 선택하세요. 0 : 취소");
+        Console.Write("선택 : ");
+
+        if(int.TryParse(Console.ReadLine(), out var index) && index > 0 && index <= inventory.Count)
+        {
+            // 인벤토리에서 아이템 추출
+            Item? item = inventory.GetItem(index - 1);
+
+            if (item != null)
+            {
+                //판매 가격은 구매 가격의 절반으로 설정
+                int sellPrice = item.Price / 2;
+
+                Console.WriteLine($"{item.Name}을(를) {sellPrice} 골드에 판매하시겠습니까? Y/N : ");
+                if (Console.ReadLine()?.ToUpper() == "Y")
+                {
+                    //아이템 인벤토리에서 제거 및 골드 증가
+                    inventory.RemoveItem(item);
+                    player.GainGold(sellPrice);
+
+                    //장착 해제
+                    if (item is Equipment equipment)
+                    {
+                        player.UnequipItem(equipment.Slot);
+                    }
+                    Console.WriteLine($"{item.Name}을(를) 판매했습니다.");
+                }
+            }
+
+        }
+    }
     #endregion
 }

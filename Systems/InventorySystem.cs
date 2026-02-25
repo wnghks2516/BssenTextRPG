@@ -27,7 +27,6 @@ public class InventorySystem
     }
 
     //아이템 삭제
-
     public bool RemoveItem(Item item)
     {
         if (Items.Remove(item))
@@ -39,10 +38,22 @@ public class InventorySystem
         return false;
        
     }
+
+    //인덱스 값으로 아이템 반환
+    public Item? GetItem(int index)
+    {
+        if (index >= 0 && index < Items.Count)
+        {
+            return Items[index];
+        }
+        return null;
+    }
     #endregion
 
+
+
     #region 인벤토리 표시
-    
+
     public void DisplayInventory()
     {
         ConsoleUI.DisplayInventory();
