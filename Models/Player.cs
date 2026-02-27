@@ -220,4 +220,20 @@ public class  Player : Character
         Console.WriteLine($"{amount} 골드를 사용했습니다. 현재 골드: {Gold}");
     }
     #endregion
+
+    #region 휴식 매서드
+
+    public void Rest(int cost)
+    {
+        Gold -= cost;
+        if ( CurrentHP == MaxHP && CurrentMP == MaxMP)
+        {
+            Console.WriteLine("이미 HP와 MP가 모두 회복된 상태입니다.");
+            return;
+        }
+        CurrentHP = MaxHP;
+        CurrentMP = MaxMP;
+
+    }
+    #endregion
 }

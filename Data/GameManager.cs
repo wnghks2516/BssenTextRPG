@@ -217,6 +217,7 @@ public class GameManager
                 break;
             case "5":
                 //휴식하여 HP/MP 회복
+                RestPlayer(Player);
                 break;
             case "6":
                 //게임 저장
@@ -254,6 +255,35 @@ public class GameManager
         BattleSystem.StartBattle(Player!, enemy);
 
         Console.WriteLine("\n 던전 탐험을 끝내고 마을로 돌아갑니다..");
+        ConsoleUI.PressAnyKey();
+    }
+    #endregion
+
+    #region 휴식 기능
+    private void RestPlayer(Player player)
+    {
+        //상수 const : 상수는 한 번 값이 할당되면 변경할 수 없는 변수, 보통 대문자로 작성하여 구분
+        const int restCost = 50;
+        Console.Clear();
+        Console.WriteLine("휴식을 취합니다... HP와 MP가 회복됩니다.");
+        if ( player.Gold < restCost)
+        {
+            Console.WriteLine("골드가 부족하여 휴식을 취할 수 없습니다.");
+            ConsoleUI.PressAnyKey();
+            return;
+        }
+
+        Console.WriteLine($"휴식 비용 : {restCost} 골드을 지불하여 휴식을 취하겠습니까? Y / N");
+        if(Console.ReadLine()?.ToUpper() == "Y")
+        {
+            player.SpendGold(restCost);
+            player.Rest(restCost);
+            Console.WriteLine("휴식을 취했습니다. HP와 MP가 회복되었습니다.");
+        }
+        else
+        {
+            Console.WriteLine("휴식을 취하지 않았습니다.");
+        }
         ConsoleUI.PressAnyKey();
     }
     #endregion
