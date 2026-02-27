@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using TextRPG.Utils;
 using TextRPG.Models;
 using TextRPG.Systems;
-
+using TextRPG.Data;
 namespace TextRPG.Data;
 
 public class GameManager
@@ -64,7 +64,8 @@ public class GameManager
     //상점 시스템
     public ShopSystem Shop { get; private set; }
 
-
+    // 저장/불러오기 시스템
+    public SaveLoadSystem SaveLoadManager { get; private set; }
 
     #region 게임 시작/종료
 
@@ -221,6 +222,7 @@ public class GameManager
                 break;
             case "6":
                 //게임 저장
+                SaveGame(Player, Inventory);
                 break;
             case "0":
                 IsRunning = false; // 게임 종료
@@ -286,5 +288,33 @@ public class GameManager
         }
         ConsoleUI.PressAnyKey();
     }
+    #endregion
+
+
+    #region 게임 저장 기능
+
+    private void SaveGame(Player player, InventorySystem inventory)
+    {
+        Console.Clear();
+        Console.WriteLine("게임을 저장합니다...");
+        //저장 매서드 호출
+        SaveLoadSystem.SaveGame(player, inventory);
+        if ( Player == null || Inventory == null)
+        {
+            Console.WriteLine("저장할 데이터가 없습니다.");
+            ConsoleUI.PressAnyKey();
+            return;
+        }
+        if (SaveLoadSystem.SaveGame(player, inventory))
+        {
+            Console.WriteLine("게임이 성공적으로 저장되었습니다.");
+        }
+        else
+        {
+            Console.WriteLine("게임 저장에 실패했습니다.");
+        }
+        ConsoleUI.PressAnyKey();
+    }
+
     #endregion
 }
