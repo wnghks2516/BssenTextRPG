@@ -69,23 +69,28 @@ public class GameManager
 
     #region 게임 시작/종료
 
-    public void StartGame()
+    //게임 시작 매서드
+
+    
+
+    public void StartGame(bool loadedGame = false)
     {
         ConsoleUI.ShowTitle();
         Console.WriteLine("게임을 시작합니다.\n");
 
+        //새로 시작하는 게임에서만 새 캐릭터 및 설정을 처리
         //캐릭터 생성
-        CreateCharacter();
 
-        //인벤토리 초기화
-        Inventory = new InventorySystem();
+        if (!loadedGame)
+        {
+            CreateCharacter();
 
-        SetupInitItems();
+            //인벤토리 초기화
+            Inventory = new InventorySystem();
 
-        //테스트 코드 - 대미지 적용
-        //Player.TakeDamage(70);
+            SetupInitItems();
 
-
+        }
         //메인 게임 루프
         IsRunning = true;
         while(IsRunning)
@@ -144,7 +149,7 @@ public class GameManager
         }
 
         //입력한 이름과 선택한 직업으로 플레이어 캐릭터 생성
-        Player = new Player(name, jobType, gold: 1000);
+        Player = new Player(name, jobType);
         Console.WriteLine($"'{Player.Name}'님이 '{Player.Job}' 직업으로 생성되었습니다. 모험을 시작하겠습니다!\n");
         Player.DisplayInfo();
 
@@ -291,7 +296,9 @@ public class GameManager
     #endregion
 
 
-    #region 게임 저장 기능
+    #region 게임 저장 및 로드 기능
+
+    //게임 저장
 
     private void SaveGame(Player player, InventorySystem inventory)
     {
@@ -315,6 +322,27 @@ public class GameManager
         }
         ConsoleUI.PressAnyKey();
     }
+
+    //게임 로드
+
+    public bool LoadGame()
+    {
+        var saveData = SaveLoadSystem.LoadGame();
+        if (saveData == null) return false;
+
+        // 1. Player 복원
+        Player = SaveLoadSystem.LoadPlayer(saveData.Player);
+
+
+        // 2. Inventory 복원
+
+        // 3. 장착 아이템 복원
+
+        Console.WriteLine("게임이 성공적으로 로드되었습니다.");
+        ConsoleUI.PressAnyKey();
+        return true;
+    }
+
 
     #endregion
 }

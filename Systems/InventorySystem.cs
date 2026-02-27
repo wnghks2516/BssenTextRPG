@@ -66,6 +66,7 @@ public class InventorySystem
 
         Console.WriteLine("\n[보유 아이템]");
         Console.WriteLine("장비 ");
+        
         for(int i = 0; i < Items.Count; i++)
         {
             if(Items[i] is Equipment)

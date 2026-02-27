@@ -102,4 +102,62 @@ public class SaveLoadSystem
 
     #endregion
 
+
+    #region 게임 불러오기
+
+    //저장된 파일 체크
+    public static bool IsSaveFileExists()
+    {
+        return File.Exists(SaveFilePath);
+    }
+
+    public static GameSaveData? LoadGame()
+    {
+        try
+        {
+            // 1. Json 파일 읽어오기
+            string jsonString = File.ReadAllText(SaveFilePath);
+            Console.WriteLine("저장된 게임 데이터 확인 : ");
+            Console.WriteLine(jsonString);
+
+            // 2. Json 문자열 -> DTO 변환 
+            var saveData = JsonSerializer.Deserialize<GameSaveData>(jsonString, jsonOptions);
+            Console.WriteLine("게임 데이터 역직렬화 완료 ");
+            return saveData;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"게임 불러오기 중 오류 발생: {e.Message}");
+            return null;
+        }
+    }
+
+    //PlayerData DTO -> Player 객체로 변환
+
+    public static Player LoadPlayer(PlayerData data)
+    {
+        // JobType을 문자열로 저장했기 때문에 , Enum으로 변환하는 작업
+        var job = Enum.Parse<JobType>(data.Job);
+
+        //Player 객체 생성
+        var player = new Player(data.Name, job);
+
+        player.Level = data.Level;
+        player.CurrentHP = data.CurrentHP;
+        player.MaxHP = data.MaxHP;
+        player.CurrentMP = data.CurrentMP;
+        player.MaxMP = data.MaxMP;
+        player.Gold = data.Gold;
+
+        return player;
+
+    }
+
+    //ItemData DTO -> Item 객체로 변환
+
+    //저장된 장착 아이템을 복원 매서드 ( 무기 / 방어구 )
+
+    //아이템 생성 -> Inventory추가
+
+    #endregion
 }

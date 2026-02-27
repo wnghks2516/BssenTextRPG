@@ -8,7 +8,7 @@ public class  Player : Character
     public JobType Job { get; private set; }
     
     //골드
-    public int Gold { get; private set; }
+    public int Gold { get; set; }
     // 장착 무기 
     public Equipment? EquippedWeapon { get; private set; }
 
@@ -17,7 +17,7 @@ public class  Player : Character
     #endregion
 
     #region 생성자
-    public Player(string name, JobType job, int gold) : base(
+    public Player(string name, JobType job) : base(
         name: name,
         maxHP: GetInitHP(job),
         maxMP: GetInitMP(job),
