@@ -155,9 +155,69 @@ public class SaveLoadSystem
 
     //ItemData DTO -> Item 객체로 변환
 
+    public static InventorySystem LoadInventory(List<ItemData> itemDataList, Player player)
+    {
+        var inventory = new InventorySystem();
+        foreach (var itemData in itemDataList)
+        {
+            Item? item = null;
+            if ( itemData.ItemType == "Equipment")
+            {
+                //장착 슬롯 확인
+                var slot = Enum.Parse<EquipmentSlot>(itemData.Slot);
+                if(slot == EquipmentSlot.Weapon)
+                {
+                    item = Equipment.CreateSword(itemData.Name);
+                }
+                else if ( slot == EquipmentSlot.Armor)
+                {
+                    item = Equipment.CreateArmor(itemData.Name);
+                }
+            }
+            else if ( itemData.ItemType == "Consumable")
+            {
+                //소모품 생성 로직 추가 필요
+                item = Consumable.CreatePotion(itemData.Name);
+            }
+           
+            if (item != null)
+            {
+                inventory.AddItem(item);
+            }
+            
+        }
+        return inventory;
+    }
+
+
     //저장된 장착 아이템을 복원 매서드 ( 무기 / 방어구 )
 
-    //아이템 생성 -> Inventory추가
+    public static void LoadEquippedItems(Player player,PlayerData data, InventorySystem inventory)
+    {
+        //장비 장착
+        if ( !string.IsNullOrEmpty(data.EquippedWeaponName) || !string.IsNullOrEmpty(data.EquippedArmorName))
+        {
+            // 인벤토리에서 같은 이름의 아이템 확인
+            for (int i = 0; i < inventory.Count; i++)
+            {
+                var item = inventory.GetItem(i);
+                if (item is Equipment equipment && equipment.Slot == EquipmentSlot.Weapon &&
+                    equipment.Name == data.EquippedWeaponName)
+                {
+                    player.EquipItem(equipment);
+                    break;
+                }
+                else if (item is Equipment equipment2 && equipment2.Slot == EquipmentSlot.Armor &&
+                    equipment2.Name == data.EquippedArmorName)
+                {
+                    player.EquipItem(equipment2);
+                    break;
+                }
+            }
 
+        }
+
+        
+    }
     #endregion
 }
