@@ -128,23 +128,17 @@ public class GameManager
         while (true)
         {
             Console.Write("숫자를 입력하세요 : ");
-            string? input = Console.ReadLine(); 
-
-            switch(input)
+            string? input = Console.ReadLine();
+            if (int.TryParse(input, out int choice) && choice >= 1 && choice <= 3)
             {
-                case "1":
-                    jobType = JobType.Warrior;
-                    break;
-                case "2":
-                    jobType = JobType.Archer;
-                    break;
-                case "3":
-                    jobType = JobType.Mage;
-                    break;
-                default:
-                    Console.WriteLine("잘못된 입력입니다. 다시 입력해주세요.");
-                    continue; // 잘못된 입력 시 다시 입력 받기
+                jobType = (JobType)(choice - 1);
+                break;
             }
+            else
+            {
+                Console.WriteLine("잘못된 입력입니다. 다시 입력해주세요.");
+            }
+             
             break; // 올바른 입력이 들어오면 루프 종료
         }
 
@@ -188,21 +182,10 @@ public class GameManager
     #region 메인메뉴 출력
     public void showMainMenu()
     {
-        Console.Clear();
-        Console.WriteLine("╔═════════════════════════════════════════════════════════╗");
-        Console.WriteLine("║                         메인 메뉴                       ║");
-        Console.WriteLine("╚═════════════════════════════════════════════════════════╝");
-
-        Console.WriteLine("\n 1. 상태 보기");
-        Console.WriteLine(" 2. 인벤토리");
-        Console.WriteLine(" 3. 상점");
-        Console.WriteLine(" 4. 던전 입장");
-        Console.WriteLine(" 5. 휴식 ( HP / MP ) 회복");
-        Console.WriteLine(" 6. 저장");
-        Console.WriteLine(" 0. 게임 종료");
-
+        ConsoleUI.ShowMainMenu();
         Console.Write("\n원하는 메뉴의 숫자를 입력하세요 : ");
         string? input = Console.ReadLine();
+
         switch(input)
         {
             case "1":
@@ -231,11 +214,8 @@ public class GameManager
                 break;
             case "0":
                 IsRunning = false; // 게임 종료
-                Console.WriteLine("\n╔══════════════════════════════════════════╗");
-                Console.WriteLine("║                                          ║");
-                Console.WriteLine("║            GAME OVER                     ║");
-                Console.WriteLine("║                                          ║");
-                Console.WriteLine("╚══════════════════════════════════════════╝\n");
+                ConsoleUI.ShowGameOver(); 
+                ConsoleUI.PressAnyKey();
                 break;
             default:
                 Console.WriteLine("잘못된 입력입니다. 다시 입력해주세요.");

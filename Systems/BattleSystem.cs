@@ -1,4 +1,5 @@
 ﻿using TextRPG.Models;
+using TextRPG.Utils;
 
 namespace TextRPG.Systems;
 
@@ -91,14 +92,7 @@ public class BattleSystem
     //플레이어 행동 ( 1. 공격 2. 스킬 3. 도망 )
     private bool PlayerTurn(Player player, Enemy enemy)
     {
-        Console.WriteLine("\n╔════════════════════════════════╗");
-        Console.WriteLine($"║         플레이어 턴!           ║");
-        Console.WriteLine("╚════════════════════════════════╝\n");
-        Console.WriteLine($"HP : {player.CurrentHP}/{player.MaxHP}  MP: {player.CurrentMP}/{player.MaxMP}");
-        Console.WriteLine("\n 행동을 선택하세요.");
-        Console.WriteLine("1. 공격");
-        Console.WriteLine("2. 스킬");
-        Console.WriteLine("3. 도망");
+        ConsoleUI.PlayerTurn(player,enemy);
         Console.WriteLine("");
         while (true)
         {

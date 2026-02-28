@@ -56,16 +56,7 @@ public class ShopSystem
     {
         while ( true )
         {
-            Console.Clear();
-            Console.WriteLine("\n╔════════════════════════════════╗");
-            Console.WriteLine("║       상      점               ║");
-            Console.WriteLine("╚════════════════════════════════╝\n");
-            Console.WriteLine($"보유 골드 : {player.Gold} 골드");
-
-            Console.WriteLine("\n1. 아이템 구매");
-            Console.WriteLine("2. 아이템 판매");
-            Console.WriteLine("3. 상점 나가기");
-
+            ConsoleUI.ShowShopMenu(player);
             Console.Write("\n선택 : ");
             string? input = Console.ReadLine();
 
