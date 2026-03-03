@@ -5,44 +5,42 @@ using TextRPG.Data;
 using System.Text.Encodings.Web;
 using TextRPG.Systems;
 
-public class SaveLoadSystem
+/// <summary>
+/// 게임 저장 및 불러오기 시스템
+/// </summary>
+public static class SaveLoadSystem
 {
-    // 게임 저장 및 불러오기 시스템
-
-    private const string SaveFilePath = "savegame.json";
-
-    //Json Serializer 옵션
-    //Serializer란 객체를 JSON 문자열로 변환하거나 JSON 문자열을 객체로 변환하는 역할을 하는 도구입니다.
-
-
-    //
-    private static readonly JsonSerializerOptions jsonOptions = new()
+    #region JSON 옵션
+    private static readonly JsonSerializerOptions JsonOptions = new()
     {
-        WriteIndented = true, // JSON 문자열을 읽기 쉽게 들여쓰기
-        IncludeFields = true, // 필드도 직렬화/역직렬화에 포함
+        WriteIndented = true,
+        IncludeFields = true,
         Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
     };
+    #endregion
+
+    #region 파일 체크
+    public static bool IsSaveFileExists()
+    {
+        return File.Exists(GameConfig.SaveFilePath);
+    }
+    #endregion
 
     #region 저장
     public static bool SaveGame(Player player, InventorySystem inventory)
     {
         try
         {
-            // 1. 게임 객체 생성 클래스 -> DTO(Data Transfer Object)로 변환
             var saveData = new GameSaveData
             {
                 Player = ConvertToPlayerData(player),
-                InventoryData = ConvertToItemData(inventory),
-
+                InventoryData = ConvertToInventoryData(inventory)
             };
 
-            // 2. DTO 객체 => JSON 문자열로 직렬화
-            string jsonString = JsonSerializer.Serialize(saveData, jsonOptions);
-
-            // 3. JSON 문자열을 파일로 저장
-            File.WriteAllText(SaveFilePath, jsonString);
+            string jsonString = JsonSerializer.Serialize(saveData, JsonOptions);
+            File.WriteAllText(GameConfig.SaveFilePath, jsonString);
+            
             return true;
-
         }
         catch (Exception e)
         {
@@ -51,7 +49,6 @@ public class SaveLoadSystem
         }
     }
 
-    // Player->PlayerData로 변환
     private static PlayerData ConvertToPlayerData(Player player)
     {
         return new PlayerData
@@ -65,64 +62,59 @@ public class SaveLoadSystem
             MaxMP = player.MaxMP,
             Attack = player.AttackPower,
             Defense = player.Defense,
+            Gold = player.Gold,
             EquippedWeaponName = player.EquippedWeapon?.Name,
-            EquippedArmorName = player.EquippedArmor?.Name,
-            Gold = player.Gold
+            EquippedArmorName = player.EquippedArmor?.Name
         };
     }
-    // Inventory -> ItemData로 변환
-    private static List<ItemData> ConvertToItemData(InventorySystem inventory)
-    { 
+
+    private static List<ItemData> ConvertToInventoryData(InventorySystem inventory)
+    {
         var itemDataList = new List<ItemData>();
+        
         for (int i = 0; i < inventory.Count; i++)
         {
             var item = inventory.GetItem(i);
             if (item == null) continue;
+
             var itemData = new ItemData
             {
                 Name = item.Name,
+                Disciption = item.Description
             };
 
-            if ( item is Equipment equipment)
+            switch (item)
             {
-                itemData.ItemType = "Equipment";
-                itemData.Slot =equipment.Slot.ToString();
-               
+                case Equipment equipment:
+                    itemData.ItemType = "Equipment";
+                    itemData.Slot = equipment.Slot.ToString();
+                    break;
+                case Consumable:
+                    itemData.ItemType = "Consumable";
+                    break;
             }
-            else if ( item is Consumable consumable)
-            {
-                itemData.ItemType = "Consumable";
-            }
-            itemData.Disciption = item.Description;
-                itemDataList.Add(itemData);
 
+            itemDataList.Add(itemData);
         }
+
         return itemDataList;
     }
-
     #endregion
 
-
-    #region 게임 불러오기
-
-    //저장된 파일 체크
-    public static bool IsSaveFileExists()
-    {
-        return File.Exists(SaveFilePath);
-    }
-
+    #region 불러오기
     public static GameSaveData? LoadGame()
     {
         try
         {
-            // 1. Json 파일 읽어오기
-            string jsonString = File.ReadAllText(SaveFilePath);
-            Console.WriteLine("저장된 게임 데이터 확인 : ");
-            Console.WriteLine(jsonString);
+            if (!IsSaveFileExists())
+            {
+                Console.WriteLine("저장된 게임 파일이 없습니다.");
+                return null;
+            }
 
-            // 2. Json 문자열 -> DTO 변환 
-            var saveData = JsonSerializer.Deserialize<GameSaveData>(jsonString, jsonOptions);
-            Console.WriteLine("게임 데이터 역직렬화 완료 ");
+            string jsonString = File.ReadAllText(GameConfig.SaveFilePath);
+            var saveData = JsonSerializer.Deserialize<GameSaveData>(jsonString, JsonOptions);
+            
             return saveData;
         }
         catch (Exception e)
@@ -132,92 +124,91 @@ public class SaveLoadSystem
         }
     }
 
-    //PlayerData DTO -> Player 객체로 변환
-
     public static Player LoadPlayer(PlayerData data)
     {
-        // JobType을 문자열로 저장했기 때문에 , Enum으로 변환하는 작업
-        var job = Enum.Parse<JobType>(data.Job);
+        if (!Enum.TryParse<JobType>(data.Job, out var job))
+        {
+            job = JobType.Warrior; // 기본값
+        }
 
-        //Player 객체 생성
-        var player = new Player(data.Name, job);
+        var player = new Player(data.Name, job)
+        {
+            Level = data.Level,
+            CurrentHP = data.CurrentHP,
+            MaxHP = data.MaxHP,
+            CurrentMP = data.CurrentMP,
+            MaxMP = data.MaxMP
+        };
 
-        player.Level = data.Level;
-        player.CurrentHP = data.CurrentHP;
-        player.MaxHP = data.MaxHP;
-        player.CurrentMP = data.CurrentMP;
-        player.MaxMP = data.MaxMP;
-        player.Gold = data.Gold;
+        player.SetGold(data.Gold);
 
         return player;
-
     }
-
-    //ItemData DTO -> Item 객체로 변환
 
     public static InventorySystem LoadInventory(List<ItemData> itemDataList, Player player)
     {
         var inventory = new InventorySystem();
+
         foreach (var itemData in itemDataList)
         {
-            Item? item = null;
-            if ( itemData.ItemType == "Equipment")
-            {
-                //장착 슬롯 확인
-                var slot = Enum.Parse<EquipmentSlot>(itemData.Slot);
-                if(slot == EquipmentSlot.Weapon)
-                {
-                    item = Equipment.CreateSword(itemData.Name);
-                }
-                else if ( slot == EquipmentSlot.Armor)
-                {
-                    item = Equipment.CreateArmor(itemData.Name);
-                }
-            }
-            else if ( itemData.ItemType == "Consumable")
-            {
-                //소모품 생성 로직 추가 필요
-                item = Consumable.CreatePotion(itemData.Name);
-            }
-           
+            Item? item = CreateItemFromData(itemData);
+            
             if (item != null)
             {
                 inventory.AddItem(item);
             }
-            
         }
+
         return inventory;
     }
 
-
-    //저장된 장착 아이템을 복원 매서드 ( 무기 / 방어구 )
-
-    public static void LoadEquippedItems(Player player,PlayerData data, InventorySystem inventory)
+    private static Item? CreateItemFromData(ItemData itemData)
     {
-        //장비 장착
-        if ( !string.IsNullOrEmpty(data.EquippedWeaponName) || !string.IsNullOrEmpty(data.EquippedArmorName))
+        return itemData.ItemType switch
         {
-            // 인벤토리에서 같은 이름의 아이템 확인
-            for (int i = 0; i < inventory.Count; i++)
-            {
-                var item = inventory.GetItem(i);
-                if (item is Equipment equipment && equipment.Slot == EquipmentSlot.Weapon &&
-                    equipment.Name == data.EquippedWeaponName)
-                {
-                    player.EquipItem(equipment);
-                    break;
-                }
-                else if (item is Equipment equipment2 && equipment2.Slot == EquipmentSlot.Armor &&
-                    equipment2.Name == data.EquippedArmorName)
-                {
-                    player.EquipItem(equipment2);
-                    break;
-                }
-            }
+            "Equipment" => CreateEquipmentFromData(itemData),
+            "Consumable" => Consumable.CreatePotion(itemData.Name),
+            _ => null
+        };
+    }
 
+    private static Equipment? CreateEquipmentFromData(ItemData itemData)
+    {
+        if (string.IsNullOrEmpty(itemData.Slot)) return null;
+
+        if (!Enum.TryParse<EquipmentSlot>(itemData.Slot, out var slot))
+        {
+            return null;
         }
 
-        
+        return slot switch
+        {
+            EquipmentSlot.Weapon => Equipment.CreateSword(itemData.Name),
+            EquipmentSlot.Armor => Equipment.CreateArmor(itemData.Name),
+            _ => null
+        };
+    }
+
+    public static void LoadEquippedItems(Player player, PlayerData data, InventorySystem inventory)
+    {
+        for (int i = 0; i < inventory.Count; i++)
+        {
+            var item = inventory.GetItem(i);
+            
+            if (item is not Equipment equipment) continue;
+
+            bool shouldEquip = equipment.Slot switch
+            {
+                EquipmentSlot.Weapon => equipment.Name == data.EquippedWeaponName,
+                EquipmentSlot.Armor => equipment.Name == data.EquippedArmorName,
+                _ => false
+            };
+
+            if (shouldEquip)
+            {
+                player.EquipItem(equipment);
+            }
+        }
     }
     #endregion
 }

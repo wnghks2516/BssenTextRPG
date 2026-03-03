@@ -27,30 +27,25 @@ internal class Program
 
         while (true)
         {
-            Console.Write("선택: ");
-            string? input = Console.ReadLine();
-            switch (input)
+            int choice = InputHelper.GetIntInput("\n선택: ", 0, 2);
+
+            switch (choice)
             {
-                case "1":
+                case 1:
                     // 새 게임 시작
                     GameManager.Instance.StartGame();
                     return;
-                case "2":
+                case 2:
 
                     //이어 하기
                     if (GameManager.Instance.LoadGame())
                     {
-                        GameManager.Instance.StartGame(true);
+                        GameManager.Instance.StartGame(isLoadedGame: true);
                     }
-                  
                     return;
-                case "3":
-                    Console.WriteLine("게임을 종료합니다.");
-                    Environment.Exit(0);
-                    break;
-                default:
-                    Console.WriteLine("잘못된 입력입니다. 다시 선택해주세요.");
-                    break;
+                case 0:
+                    Console.WriteLine("\n게임을 종료합니다. 안녕히 가세요!");
+                    return;
             }
         }
     }

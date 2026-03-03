@@ -1,19 +1,16 @@
 ﻿namespace TextRPG.Models;
 
-public class  Player : Character
+public class Player : Character
 {
-
     #region 프로퍼티
-    //직업
     public JobType Job { get; private set; }
-    
-    //골드
-    public int Gold { get; set; }
-    // 장착 무기 
+    public int Gold { get; private set; }
     public Equipment? EquippedWeapon { get; private set; }
-
-    // 장착 방어구
     public Equipment? EquippedArmor { get; private set; }
+
+    // 계산된 프로퍼티 - 장비 보너스 포함
+    public int TotalAttack => AttackPower + (EquippedWeapon?.AttackBonus ?? 0);
+    public int TotalDefense => Defense + (EquippedArmor?.DefenseBonus ?? 0);
     #endregion
 
     #region 생성자
@@ -25,215 +22,169 @@ public class  Player : Character
         defense: GetInitDefense(job),
         level: 1
     )
-        {
-            Job = job;
-            Gold = 1000;
-        }
-
+    {
+        Job = job;
+        Gold = Data.GameConfig.InitialGold;
+    }
     #endregion
 
     #region 직업별 초기 스텟
-
-    //체력
-    private static int GetInitHP(JobType job)
+    private static int GetInitHP(JobType job) => job switch
     {
-        switch(job)
-        {
-            case JobType.Warrior: return 150;
-            case JobType.Archer: return 100;
-            case JobType.Mage: return 80;
-            default: return 100;
-        }
-    }
+        JobType.Warrior => 150,
+        JobType.Archer => 100,
+        JobType.Mage => 80,
+        _ => 100
+    };
 
-    private static int GetInitMP(JobType job)
+    private static int GetInitMP(JobType job) => job switch
     {
-        switch (job)
-        {
-            case JobType.Warrior: return 30;
-            case JobType.Archer: return 70;
-            case JobType.Mage: return 110;
-            default: return 100;
-        }
-    }
+        JobType.Warrior => 30,
+        JobType.Archer => 70,
+        JobType.Mage => 110,
+        _ => 100
+    };
 
-    private static int GetInitAttack(JobType job) =>
-        job switch
-        {
-            JobType.Warrior => 20,
-            JobType.Archer => 30,
-            JobType.Mage => 40,
-            _ => 10
-        };
+    private static int GetInitAttack(JobType job) => job switch
+    {
+        JobType.Warrior => 20,
+        JobType.Archer => 30,
+        JobType.Mage => 40,
+        _ => 10
+    };
 
-    private static int GetInitDefense(JobType job) =>
-        job switch
-        {
-            JobType.Warrior => 15,
-            JobType.Archer => 10,
-            JobType.Mage => 8,
-            _ => 8
-        };
+    private static int GetInitDefense(JobType job) => job switch
+    {
+        JobType.Warrior => 15,
+        JobType.Archer => 10,
+        JobType.Mage => 8,
+        _ => 8
+    };
     #endregion
 
-    #region 매서드
-    //플레이어 정보 출력 ( 오버라이드 )
-    public override void DisplayInfo()
-    {
-        //base.DisplayInfo();
-        Console.Clear();
-        Console.WriteLine($"=========== {Name} 정보 ===========");
-        Console.WriteLine($"레벨 : {Level}");
-        Console.WriteLine($"골드 : {Gold}");
-        Console.WriteLine($"HP : {CurrentHP}/{MaxHP} | MP : {CurrentMP}/{MaxMP}");
-
-        int attackBonus = EquippedWeapon != null ? EquippedWeapon.AttackBonus : 0;
-        int defenseBonus = EquippedArmor != null ? EquippedArmor.DefenseBonus : 0;
-
-        Console.WriteLine($"ATK : {AttackPower} (+{attackBonus}) | DEF : {Defense} (+{defenseBonus})");
-        //장착 아이템 정보
-
-        Console.WriteLine($"[ 장착 중인 장비 ] \n" +
-            $"무기 : {(EquippedWeapon != null ? EquippedWeapon.Name : "없음")} | " +
-            $"방어구 : {(EquippedArmor != null ? EquippedArmor.Name : "없음")}");
-
-        Console.WriteLine($"직업 : {Job}");
-
-       
-
-    }
-    #endregion
-
-    #region 기본공격 매서드
+    #region 전투 메서드
     public override int Attack(Character target)
     {
-
-        //장착무기 또는 방어구에 따른 추가 데미지 계산
-        int attackDamage = AttackPower;
-
-        // null 병합 연산자 : ??
-        // int? a 란 int형 변수 a가 null이 될 수 있음을 나타냄.
-        //int? a = null;
-
-        attackDamage += EquippedWeapon?.AttackBonus ?? 0; // 무기 공격력 보너스
-        // 아래의 코드가 위의 코드와 동일한 기능을 수행
-        //if ( EquippedArmor != null)
-        //{
-        //    attackDamage += EquippedArmor.DefenseBonus; // 방어구 공격력 보너스
-        //}
-
-        return target.TakeDamage(attackDamage);
+        return target.TakeDamage(TotalAttack);
     }
-    #endregion
 
-    #region 마법공격 Player 전용 매서드
-
-    public int SkillAttack ( Character target )
+    public int SkillAttack(Character target)
     {
-        int mpCost = 20; //스킬 사용에 필요한 MP
-        // 스킬 공격은 기본공격의 1.5배 대미지를 주지만 마나를 소모
-
-        int totalDamage = (int)(AttackPower * 1.5);
-        totalDamage += EquippedWeapon?.AttackBonus ?? 0; // 무기 공격력 보너스
-
-        Console.WriteLine($"마법 공격력 : {totalDamage}");
-        if (CurrentMP < mpCost)
+        if (CurrentMP < Data.GameConfig.SkillMpCost)
         {
-            Console.WriteLine("MP가 부족하여 스킬을 사용할 수 없습니다.");
             return 0;
         }
-        CurrentMP -= mpCost;
-        //대미지 전달
-        target.TakeDamage(totalDamage);
-        return CurrentMP;
+
+        CurrentMP -= Data.GameConfig.SkillMpCost;
+        int skillDamage = (int)(TotalAttack * Data.GameConfig.SkillDamageMultiplier);
+        return target.TakeDamage(skillDamage);
     }
     #endregion
 
-
-    #region 골드 획득 매서드
+    #region 골드 관리
     public void GainGold(int amount)
     {
         Gold += amount;
         Console.WriteLine($"{amount} 골드를 획득했습니다. 현재 골드: {Gold}");
     }
+
+    public bool SpendGold(int amount)
+    {
+        if (Gold < amount)
+        {
+            Console.WriteLine("골드가 부족합니다.");
+            return false;
+        }
+
+        Gold -= amount;
+        return true;
+    }
+
+    /// <summary>
+    /// 골드를 직접 설정합니다 (저장/불러오기용)
+    /// </summary>
+    internal void SetGold(int amount)
+    {
+        Gold = amount;
+    }
     #endregion
 
-    //장비 착용 매서드 
+    #region 장비 관리
     public void EquipItem(Equipment newEquipment)
     {
-        Equipment? prevEquipment = null;
+        Equipment? prevEquipment = newEquipment.Slot switch
+        {
+            EquipmentSlot.Weapon => EquippedWeapon,
+            EquipmentSlot.Armor => EquippedArmor,
+            _ => null
+        };
 
         switch (newEquipment.Slot)
         {
             case EquipmentSlot.Weapon:
-                prevEquipment = EquippedWeapon;
                 EquippedWeapon = newEquipment;
                 break;
             case EquipmentSlot.Armor:
-                prevEquipment = EquippedArmor;
                 EquippedArmor = newEquipment;
                 break;
         }
 
-        //이전 장비 해제 메시지
         if (prevEquipment != null)
         {
             Console.WriteLine($"{prevEquipment.Name}을(를) 해제하였습니다.");
         }
         Console.WriteLine($"{newEquipment.Name}을(를) 장착했습니다.");
     }
-    //장비 해제
+
     public Equipment? UnequipItem(EquipmentSlot slot)
     {
-     Equipment? equipment = null;
-        switch (slot)
+        Equipment? equipment = slot switch
         {
-            case EquipmentSlot.Weapon:
-                equipment = EquippedWeapon;
-                EquippedWeapon = null;
-                break;
+            EquipmentSlot.Weapon => EquippedWeapon,
+            EquipmentSlot.Armor => EquippedArmor,
+            _ => null
+        };
 
-            case EquipmentSlot.Armor:
-                equipment = EquippedArmor;
-                EquippedArmor = null;
-                break;
-            default:
-                Console.WriteLine("잘못된 장비 슬롯입니다.");
-                break;
-        }
-        if(equipment != null)
+        if (equipment != null)
         {
+            switch (slot)
+            {
+                case EquipmentSlot.Weapon:
+                    EquippedWeapon = null;
+                    break;
+                case EquipmentSlot.Armor:
+                    EquippedArmor = null;
+                    break;
+            }
             Console.WriteLine($"{equipment.Name}을(를) 해제했습니다.");
         }
-        return equipment;
-    }
 
-    #region 골드 사용 매서드
-    public void SpendGold(int amount)
-    {
-        if (amount > Gold)
-        {
-            Console.WriteLine("골드가 부족합니다.");
-            return;
-        }
-        Gold -= amount;
-        Console.WriteLine($"{amount} 골드를 사용했습니다. 현재 골드: {Gold}");
+        return equipment;
     }
     #endregion
 
-    #region 휴식 매서드
-
-    public void Rest(int cost)
+    #region 휴식
+    public void Rest()
     {
-        Gold -= cost;
-        if ( CurrentHP == MaxHP && CurrentMP == MaxMP)
-        {
-            Console.WriteLine("이미 HP와 MP가 모두 회복된 상태입니다.");
-            return;
-        }
         CurrentHP = MaxHP;
         CurrentMP = MaxMP;
+        Console.WriteLine("휴식을 취했습니다. HP와 MP가 완전히 회복되었습니다.");
+    }
+    #endregion
 
+    #region 정보 출력
+    public override void DisplayInfo()
+    {
+        Console.Clear();
+        Console.WriteLine($"=========== {Name} 정보 ===========");
+        Console.WriteLine($"레벨: {Level}");
+        Console.WriteLine($"골드: {Gold} G");
+        Console.WriteLine($"HP: {CurrentHP}/{MaxHP} | MP: {CurrentMP}/{MaxMP}");
+        Console.WriteLine($"ATK: {AttackPower} (+{EquippedWeapon?.AttackBonus ?? 0}) | DEF: {Defense} (+{EquippedArmor?.DefenseBonus ?? 0})");
+        Console.WriteLine($"\n[ 장착 중인 장비 ]");
+        Console.WriteLine($"무기: {EquippedWeapon?.Name ?? "없음"} | 방어구: {EquippedArmor?.Name ?? "없음"}");
+        Console.WriteLine($"직업: {Job}");
+        Console.WriteLine("================================");
     }
     #endregion
 }
